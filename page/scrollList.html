@@ -1,0 +1,236 @@
+<!doctype>
+<html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+<title>翟女士和汪先生的欧洲蜜月游！</title>
+<meta name="keywords" content="汪威彬，翟美琴，Hello，游玩，世界，中国，地球，旅游，放松，游记，地理，欧洲，法国，德国，意大利，瑞士，雪山，海">
+<meta name="description" content="汪威彬，翟美琴，Hello，游玩的天地，体验大自然的生活，全新的自我">
+<meta name="author" content="Christoph Ono, Sebastian Helzle">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="css/list.css"></style>
+<link href="images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+</head>
+
+<body>
+
+<div id="container">
+	<header>
+		<h1>翟女士和汪先生的欧洲蜜月游！</h1>
+		<p><img src="images/header/logo.png"></p>	
+		<canvas id="canvas"></canvas>		
+	</header>
+	
+	<div id="main" role="main">
+		<ul id="tiles">
+		</ul>
+
+	</div>
+	<footer>
+
+	</footer>
+</div>
+<!--背景音乐-->
+<img id="audioImg" class="arotate" src="images/header/audio.png" />
+<audio id="musicfx" src="images/jsan.mp3" loop autoplay"></audio>
+<!-- include jQuery -->
+<script src="js/jquery.js"></script>
+
+<!-- Include the imagesLoaded plug-in -->
+<script src="js/jquery.imagesloaded.js"></script>
+
+<!-- Include the plug-in -->
+<script src="js/jquery.wookmark.js"></script>
+
+<!-- Once the images are loaded, initalize the Wookmark plug-in. -->
+<script type="text/javascript">
+document.getElementById('musicfx').play();
+document.addEventListener("WeixinJSBridgeReady", function () {  
+    WeixinJSBridge.invoke('getNetworkType', {}, function (e) {  
+        document.getElementById('musicfx').play();  
+    });  
+}, false); 
+
+$('#audioImg').on("click",function(){
+    if($(this).hasClass('arotate')){
+        musicfx.pause();
+        $(this).removeClass('arotate');
+    }else{
+        musicfx.play();
+        $(this).addClass('arotate');
+    }
+}); 
+(function ($){
+	var listData;
+	var handler
+	$('#tiles').imagesLoaded(function() {
+		// Prepare layout options.
+		var options = {
+			itemWidth: 200, // Optional min width of a grid item
+			autoResize: true, // This will auto-update the layout when the browser window is resized.
+			container: $('#tiles'), // Optional, used for some extra CSS styling
+			offset: 5, // Optional, the distance between grid items
+			outerOffset: 20, // Optional the distance from grid to parent
+			flexibleWidth: 300 // Optional, the maximum width of a grid item
+		};
+
+		function applyLayout() {
+			var moreData = listData.splice(0,15);
+			var html = "";
+			for(var i = 0, len = moreData.length; i < len;i++){
+				html += '<li><img src="'+ moreData[i].img +'" alt="汪威彬&翟美琴"><p>'+ moreData[i].title +'</p></li>'
+			}
+			$('#tiles').append(html);
+			$('#tiles').imagesLoaded(function() {
+				// Destroy the old handler
+				// if (handler.wookmarkInstance) {
+				// 	handler.wookmarkInstance.clear();
+				// }
+
+				// Create a new layout handler.
+				handler = $('#tiles li');
+				handler.wookmark(options);
+			});
+		}
+
+		/**
+		 * When scrolled all the way to the bottom, add more tiles.
+		 */
+		function onScroll(event) {
+			// Check if we're within 100 pixels of the bottom edge of the broser window.
+			var winHeight = window.innerHeight ? window.innerHeight : $(window).height(); // iphone fix
+			var closeToBottom = ($(window).scrollTop() + winHeight > $(document).height() - 100);
+
+			if (closeToBottom) {
+				applyLayout();
+			}
+		};
+
+		// Capture scroll event.
+		$(window).bind('scroll', onScroll);
+
+		$.ajax({
+			url: "js/list.txt",
+			type: "GET",
+			dataType: "jsonp",
+			jsonpCallback: "cb",
+			data: {},
+			success: function(res){
+				listData = res;
+				applyLayout()
+			}
+		})
+	});
+})(jQuery);
+</script>
+<script>
+let canvas = document.querySelector('canvas');
+let ctx = canvas.getContext('2d');
+
+let colors = ['#FFE74C', '#FF5964', '#35A7FF', '#FFFFFF', '#011627', '#004E64', '#00A5CF', '#9FFFCB', '#25A18E', '#E4572E','#F3A712', '#A8C686','#3D348B', '#7678ED', '#F7B801', '#F18701', '#00C9B1', '#005D6C', '#00043C', '#AAAAAA', '#BBBBBB', '#FFEBB7', '#BFF4ED', '#280F34', '#B30753']
+
+// let width = canvas.width = (window.innerWidth / 2) + 100;
+// let height = canvas.height = (window.innerHeight / 2) + 50;
+let width = canvas.width = window.innerWidth
+let height = canvas.height = 200
+// CANVAS SETTINGS
+let cRect = canvas.getBoundingClientRect();
+let startx = 0;
+
+canvas.addEventListener('mousemove', (e) => {
+e.preventDefault()
+let mouseX = e.pageX;
+let mouseY = e.pageY;
+
+let posX = mouseX - cRect.left;
+let posY = mouseY - cRect.top;
+
+let b2 = new Ball(posX, posY, Math.random() * 5, Math.random() * 5, colors[Math.floor(Math.random() * colors.length)], Math.floor(Math.random() * 10));
+
+balls.push(b2)
+
+})
+
+canvas.addEventListener('touchmove', (e) => {
+
+let touchobj = e.changedTouches[0];
+let distX = parseInt(touchobj.clientX)
+let distY = parseInt(touchobj.clientY)
+
+let posX = distX - cRect.left;
+let posY = distY - cRect.top;
+
+let b2 = new Ball(posX, posY, Math.random() * 5, Math.random() * 5, colors[Math.floor(Math.random() * colors.length)], Math.floor(Math.random() * 10));
+
+balls.push(b2)
+
+
+})
+
+//RESIZE
+window.addEventListener('resize', (e) => {
+canvas.width = width;
+canvas.height = height;
+})
+
+class Ball {
+constructor(x, y, velX, velY, color, size) {
+	this.x = x;
+	this.y = y;
+	this.velX = velX;
+	this.velY = velY;
+	this.color = color;
+	this.size = size || 5;
+}
+draw() {
+	ctx.beginPath();
+	ctx.fillStyle = this.color;
+	ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+	ctx.fill();
+}
+update() {
+	if (this.x >= width || this.x <= 0) {
+		this.velX = -(this.velX)
+	}
+	if ((this.y + this.size) >= height || this.y <= 0) {
+		this.velY = -(this.velY)
+	}
+	
+	this.x += this.velX;
+	this.y += this.velX;
+	
+}
+}
+let balls = []
+
+
+for (let i = 0; i < 10; i++) {
+let ball = new Ball(Math.random() * width, Math.random() * height, Math.random() * 5, Math.random() * 5, colors[Math.floor(Math.random() * colors.length)], Math.floor(Math.random() * 5))
+balls.push(ball);
+
+}
+
+function run() {
+requestAnimationFrame(run)
+
+ctx.globalAlpha = .8;
+ctx.fillStyle = '#e5e5e5';
+ctx.fillRect(0, 0, width, height);
+
+for (let i = 0; i < balls.length; i++) {
+	let b = balls[i]
+	b.update()
+	b.draw()
+}
+
+
+}
+run()
+</script>
+</body>
+</html>
